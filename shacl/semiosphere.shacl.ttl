@@ -1,0 +1,420 @@
+@prefix : <https://semiohub.org/ont/semiosphere#> .
+@prefix sh: <http://www.w3.org/ns/shacl#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix dcterms: <http://purl.org/dc/terms/> .
+
+#################################################################
+# SHACL Shapes: Semiosphere (Lotman) — Merged Canonical File
+# Filename suggestion:  semiosphere.shacl.ttl
+# Version: 0.1.0
+#################################################################
+
+:SemiosphereSHACL
+  a sh:ShapesGraph ;
+  dcterms:title "Semiosphere SHACL Guardrails (Merged)" ;
+  dcterms:description "Merged SHACL shapes enforcing computational guardrails for Lotman semiosphere modeling." ;
+  dcterms:hasVersion "0.1.0" .
+
+#################################################################
+# Root / Entry point (optional)
+#################################################################
+
+:SemiosphereShapes
+  a sh:NodeShape ;
+  rdfs:label "Semiosphere Shapes (Root)" ;
+  rdfs:comment "Entry point shape; validate graph by validating all shapes in this file." .
+
+#################################################################
+# Guardrail C1: Semiosphere MUST be modeled as Context, not Entity.
+# Enforce: SemiosphereContext instances NOT typed SemioticEntity.
+#################################################################
+
+:SemiosphereContextShape
+  a sh:NodeShape ;
+  sh:targetClass :SemiosphereContext ;
+  rdfs:label "SemiosphereContext guardrails" ;
+  sh:not [ sh:class :SemioticEntity ] ;
+  sh:message "Guardrail C1: SemiosphereContext must not also be typed as SemioticEntity (model Semiosphere as Context, not Entity)." .
+
+#################################################################
+# Guardrail C2: SemioticEntity existence MUST dependOn Semiosphere.
+# Enforce: every SemioticEntity has dependsOnContext some SemiosphereContext.
+#################################################################
+
+:SemioticEntityDependsOnContextShape
+  a sh:NodeShape ;
+  sh:targetClass :SemioticEntity ;
+  rdfs:label "SemioticEntity depends on SemiosphereContext" ;
+  sh:property [
+    sh:path :dependsOnContext ;
+    sh:minCount 1 ;
+    sh:class :SemiosphereContext ;
+    sh:message "Guardrail C2: Every SemioticEntity must have dependsOnContext pointing to at least one SemiosphereContext."
+  ] .
+
+#################################################################
+# Guardrail C3 (strict): Core/Periphery are time-indexed roles via RoleAssignment.
+# Enforce: forbid individuals of CoreRole/PeripheryRole (roles exist as classes only).
+#################################################################
+
+:NoCoreRoleIndividualsShape
+  a sh:NodeShape ;
+  sh:target [
+    a sh:SPARQLTarget ;
+    sh:select """
+      SELECT ?this WHERE {
+        ?this rdf:type :CoreRole .
+        FILTER (?this != :CoreRole)
+      }
+    """
+  ] ;
+  sh:message "Guardrail C3 (strict): Do not create individuals of CoreRole; assign CoreRole via RoleAssignment (assignedRole=:CoreRole)." .
+
+:NoPeripheryRoleIndividualsShape
+  a sh:NodeShape ;
+  sh:target [
+    a sh:SPARQLTarget ;
+    sh:select """
+      SELECT ?this WHERE {
+        ?this rdf:type :PeripheryRole .
+        FILTER (?this != :PeripheryRole)
+      }
+    """
+  ] ;
+  sh:message "Guardrail C3 (strict): Do not create individuals of PeripheryRole; assign PeripheryRole via RoleAssignment (assignedRole=:PeripheryRole)." .
+
+#################################################################
+# RoleAssignment must be complete and time-indexed.
+#################################################################
+
+:RoleAssignmentShape
+  a sh:NodeShape ;
+  sh:targetClass :RoleAssignment ;
+  rdfs:label "RoleAssignment completeness" ;
+
+  sh:property [
+    sh:path :assignmentContext ;
+    sh:minCount 1 ; sh:maxCount 1 ;
+    sh:class :SemiosphereContext ;
+    sh:message "RoleAssignment must have exactly one assignmentContext (a SemiosphereContext)."
+  ] ;
+
+  sh:property [
+    sh:path :assignedEntity ;
+    sh:minCount 1 ; sh:maxCount 1 ;
+    sh:class :SemioticEntity ;
+    sh:message "RoleAssignment must have exactly one assignedEntity (a SemioticEntity)."
+  ] ;
+
+  sh:property [
+    sh:path :assignedRole ;
+    sh:minCount 1 ; sh:maxCount 1 ;
+    sh:class :Role ;
+    sh:message "RoleAssignment must have exactly one assignedRole (a Role)."
+  ] ;
+
+  sh:property [
+    sh:path :timeStart ;
+    sh:minCount 1 ;
+    sh:datatype xsd:dateTime ;
+    sh:message "RoleAssignment must include timeStart (xsd:dateTime)."
+  ] ;
+
+  sh:property [
+    sh:path :timeEnd ;
+    sh:minCount 1 ;
+    sh:datatype xsd:dateTime ;
+    sh:message "RoleAssignment must include timeEnd (xsd:dateTime)."
+  ] ;
+
+  sh:constraint [
+    a sh:SPARQLConstraint ;
+    sh:message "RoleAssignment timeEnd must be greater than or equal to timeStart." ;
+    sh:select """
+      SELECT $this
+      WHERE {
+        $this :timeStart ?s ;
+              :timeEnd ?e .
+        FILTER ( ?e < ?s )
+      }
+    """
+  ] .
+
+#################################################################
+# Context consistency: assignedEntity must dependOnContext same ctx as assignmentContext.
+#################################################################
+
+:RoleAssignmentSameContextShape
+  a sh:NodeShape ;
+  sh:targetClass :RoleAssignment ;
+  rdfs:label "RoleAssignment must be context-consistent" ;
+  sh:constraint [
+    a sh:SPARQLConstraint ;
+    sh:message "RoleAssignment: assignedEntity must dependOnContext the same SemiosphereContext as assignmentContext." ;
+    sh:select """
+      SELECT $this
+      WHERE {
+        $this :assignmentContext ?ctx ;
+              :assignedEntity ?e .
+        FILTER NOT EXISTS { ?e :dependsOnContext ?ctx . }
+      }
+    """
+  ] .
+
+#################################################################
+# Guardrail C4: Boundary MUST enable translation (productive interface).
+#################################################################
+
+:BoundaryShape
+  a sh:NodeShape ;
+  sh:targetClass :Boundary ;
+  rdfs:label "Boundary must enable translation" ;
+
+  sh:property [
+    sh:path :enablesTranslation ;
+    sh:minCount 1 ;
+    sh:class :TranslationProcess ;
+    sh:message "Guardrail C4: Each Boundary must have at least one enablesTranslation to a TranslationProcess."
+  ] ;
+
+  sh:property [
+    sh:path :mediates ;
+    sh:minCount 1 ;
+    sh:class :Process ;
+    sh:message "Guardrail C4: Each Boundary must mediate at least one Process (typically TranslationProcess)."
+  ] .
+
+# Bidirectional integrity: if Boundary enablesTranslation T, then T transformsMeaningAcross Boundary.
+:BoundaryTranslationIntegrityShape
+  a sh:NodeShape ;
+  sh:targetClass :Boundary ;
+  rdfs:label "Boundary/Translation bidirectional integrity" ;
+  sh:constraint [
+    a sh:SPARQLConstraint ;
+    sh:message "If Boundary enablesTranslation T, then T must transformsMeaningAcross that Boundary." ;
+    sh:select """
+      SELECT $this
+      WHERE {
+        $this :enablesTranslation ?t .
+        FILTER NOT EXISTS { ?t :transformsMeaningAcross $this . }
+      }
+    """
+  ] .
+
+#################################################################
+# Guardrail C5: Translation non-invertible and asymmetric; requires source/target.
+#################################################################
+
+:TranslationProcessShape
+  a sh:NodeShape ;
+  sh:targetClass :TranslationProcess ;
+  rdfs:label "TranslationProcess constraints" ;
+
+  sh:property [
+    sh:path :invertible ;
+    sh:minCount 1 ; sh:maxCount 1 ;
+    sh:datatype xsd:boolean ;
+    sh:hasValue "false"^^xsd:boolean ;
+    sh:message "Guardrail C5: TranslationProcess must declare invertible=false."
+  ] ;
+
+  sh:property [
+    sh:path :sourceSystem ;
+    sh:minCount 1 ; sh:maxCount 1 ;
+    sh:class :SemioticSystem ;
+    sh:message "TranslationProcess must have exactly one sourceSystem (SemioticSystem)."
+  ] ;
+
+  sh:property [
+    sh:path :targetSystem ;
+    sh:minCount 1 ; sh:maxCount 1 ;
+    sh:class :SemioticSystem ;
+    sh:message "TranslationProcess must have exactly one targetSystem (SemioticSystem)."
+  ] ;
+
+  sh:constraint [
+    a sh:SPARQLConstraint ;
+    sh:message "Guardrail C5: TranslationProcess must be asymmetric: sourceSystem and targetSystem must not be identical." ;
+    sh:select """
+      SELECT $this
+      WHERE {
+        $this :sourceSystem ?s ;
+              :targetSystem ?t .
+        FILTER (?s = ?t)
+      }
+    """
+  ] .
+
+# Translation must be situated in a SemiosphereContext.
+:TranslationHasContextShape
+  a sh:NodeShape ;
+  sh:targetClass :TranslationProcess ;
+  rdfs:label "Translation must be in a SemiosphereContext" ;
+  sh:property [
+    sh:path :inContext ;
+    sh:minCount 1 ;
+    sh:class :SemiosphereContext ;
+    sh:message "TranslationProcess must have inContext pointing to a SemiosphereContext."
+  ] .
+
+#################################################################
+# Guardrail C6: Dialogue is a process with memory and context.
+#################################################################
+
+:DialogueProcessShape
+  a sh:NodeShape ;
+  sh:targetClass :DialogueProcess ;
+  rdfs:label "DialogueProcess constraints" ;
+  sh:property [
+    sh:path :hasMemory ;
+    sh:minCount 1 ; sh:maxCount 1 ;
+    sh:datatype xsd:boolean ;
+    sh:hasValue "true"^^xsd:boolean ;
+    sh:message "Guardrail C6: DialogueProcess must declare hasMemory=true."
+  ] .
+
+:DialogueHasContextShape
+  a sh:NodeShape ;
+  sh:targetClass :DialogueProcess ;
+  rdfs:label "Dialogue must be in a SemiosphereContext" ;
+  sh:property [
+    sh:path :inContext ;
+    sh:minCount 1 ;
+    sh:class :SemiosphereContext ;
+    sh:message "DialogueProcess must have inContext pointing to a SemiosphereContext."
+  ] .
+
+#################################################################
+# Guardrail C7: Explosion not predictable; must be in context; must generate Text.
+#################################################################
+
+:ExplosionEventShape
+  a sh:NodeShape ;
+  sh:targetClass :ExplosionEvent ;
+  rdfs:label "ExplosionEvent constraints" ;
+  sh:property [
+    sh:path :predictable ;
+    sh:minCount 1 ; sh:maxCount 1 ;
+    sh:datatype xsd:boolean ;
+    sh:hasValue "false"^^xsd:boolean ;
+    sh:message "Guardrail C7: ExplosionEvent must declare predictable=false."
+  ] .
+
+:ExplosionCompletenessShape
+  a sh:NodeShape ;
+  sh:targetClass :ExplosionEvent ;
+  rdfs:label "Explosion completeness" ;
+  sh:property [
+    sh:path :inContext ;
+    sh:minCount 1 ;
+    sh:class :SemiosphereContext ;
+    sh:message "ExplosionEvent must have inContext (SemiosphereContext)."
+  ] ;
+  sh:property [
+    sh:path :generatesText ;
+    sh:minCount 1 ;
+    sh:class :Text ;
+    sh:message "ExplosionEvent must generate at least one Text (generatesText)."
+  ] .
+
+#################################################################
+# Guardrail C8: NonSemioticOutside is not SemioticEntity; max 1 outside per semiosphere.
+#################################################################
+
+:NonSemioticOutsideNotEntityShape
+  a sh:NodeShape ;
+  sh:targetClass :NonSemioticOutside ;
+  rdfs:label "NonSemioticOutside guardrails" ;
+  sh:not [ sh:class :SemioticEntity ] ;
+  sh:message "Guardrail C8: NonSemioticOutside must not be typed as SemioticEntity (treat as constructed outside / remainder)." .
+
+:OneOutsidePerSemiosphereShape
+  a sh:NodeShape ;
+  sh:targetClass :SemiosphereContext ;
+  rdfs:label "One outside placeholder per SemiosphereContext" ;
+  sh:property [
+    sh:path :adjacentOutside ;
+    sh:maxCount 1 ;
+    sh:class :OutsideDomain ;
+    sh:message "Guardrail C8: Each SemiosphereContext should have at most one adjacentOutside placeholder."
+  ] .
+
+#################################################################
+# Guardrail C9: Meaning is relational (documentation + optional strict ban if property exists)
+#################################################################
+
+:NoIntrinsicMeaningOnTextShape
+  a sh:NodeShape ;
+  sh:targetClass :Text ;
+  rdfs:label "Avoid intrinsic-meaning properties on Text" ;
+  sh:message "Guardrail C9: Do not model meaning as an intrinsic property on isolated Text nodes; represent meaning via relations and context." .
+
+:NoIntrinsicMeaningPropertyShape
+  a sh:NodeShape ;
+  sh:targetClass :Text ;
+  rdfs:label "Forbid intrinsicMeaning if present" ;
+  sh:property [
+    sh:path :intrinsicMeaning ;
+    sh:maxCount 0 ;
+    sh:message "Guardrail C9 (strict): Do not use intrinsicMeaning on Text; model meaning via relations and context."
+  ] .
+
+#################################################################
+# Guardrail C10: Heterogeneity: each Semiosphere has at least 2 distinct systems.
+#################################################################
+
+:SemiosphereHeterogeneityShape
+  a sh:NodeShape ;
+  sh:targetClass :SemiosphereContext ;
+  rdfs:label "Semiosphere heterogeneity" ;
+  sh:constraint [
+    a sh:SPARQLConstraint ;
+    sh:message "Guardrail C10: SemiosphereContext must contain at least two distinct SemioticSystems (heterogeneity)." ;
+    sh:select """
+      SELECT $this
+      WHERE {
+        {
+          SELECT $this (COUNT(DISTINCT ?sys) AS ?c)
+          WHERE {
+            $this :containsSystem ?sys .
+            ?sys a :SemioticSystem .
+          }
+          GROUP BY $this
+        }
+        FILTER (?c < 2)
+      }
+    """
+  ] .
+
+#################################################################
+# Guardrail C11: Semiosphere must have at least one Boundary (minimum topology)
+#################################################################
+
+:SemiosphereHasBoundaryShape
+  a sh:NodeShape ;
+  sh:targetClass :SemiosphereContext ;
+  rdfs:label "Semiosphere must have at least one Boundary" ;
+  sh:property [
+    sh:path :boundedBy ;
+    sh:minCount 1 ;
+    sh:class :Boundary ;
+    sh:message "SemiosphereContext must have at least one boundedBy Boundary."
+  ] .
+
+#################################################################
+# Guardrail reminders (non-enforceable house rules)
+#################################################################
+
+:TimeRequiredReminderShape
+  a sh:NodeShape ;
+  sh:targetClass :SemiosphereContext ;
+  rdfs:label "Time requirement reminder" ;
+  sh:message "Guardrail C11: Use RoleAssignment with timeStart/timeEnd for core/periphery distinctions." .
+
+:PreferRelationsReminderShape
+  a sh:NodeShape ;
+  sh:targetClass :SemioticEntity ;
+  rdfs:label "Prefer relations reminder" ;
+  sh:message "Guardrail C12: Prefer modeling meaning and structure via object relations (links) rather than fixed literal attributes." .
