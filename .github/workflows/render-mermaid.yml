@@ -1,0 +1,98 @@
+name: Render Mermaid Diagrams
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  render-mermaid:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Install Mermaid CLI
+        run: |
+          npm install -g @mermaid-js/mermaid-cli
+
+      - name: Prepare output directories
+        run: |
+          mkdir -p docs/diagrams/rendered/svg
+          mkdir -p docs/diagrams/rendered/png
+          mkdir -p reports
+
+      - name: Render .mmd to SVG + PNG
+        shell: bash
+        run: |
+          set -euo pipefail
+          shopt -s nullglob
+
+          files=(docs/diagrams/*.mmd)
+          if [ "${#files[@]}" -eq 0 ]; then
+            echo "ERROR: No Mermaid files found at docs/diagrams/*.mmd"
+            exit 1
+          fi
+
+          for f in "${files[@]}"; do
+            base="$(basename "$f" .mmd)"
+            svg_out="docs/diagrams/rendered/svg/${base}.svg"
+            png_out="docs/diagrams/rendered/png/${base}.png"
+
+            echo "Rendering $f -> $svg_out"
+            mmdc -i "$f" -o "$svg_out" -b transparent
+
+            echo "Rendering $f -> $png_out"
+            mmdc -i "$f" -o "$png_out" -b transparent -t default
+          done
+
+      - name: Build render manifest
+        shell: bash
+        run: |
+          set -euo pipefail
+          {
+            echo "Mermaid Render Manifest"
+            echo "Generated: $(date -u +"%Y-%m-%dT%H:%M:%SZ")"
+            echo ""
+            echo "Inputs:"
+            ls -1 docs/diagrams/*.mmd
+            echo ""
+            echo "Outputs (SVG):"
+            ls -1 docs/diagrams/rendered/svg/*.svg
+            echo ""
+            echo "Outputs (PNG):"
+            ls -1 docs/diagrams/rendered/png/*.png
+          } > reports/DIAGRAM_RENDER_MANIFEST.txt
+
+      - name: Create single consolidated artifact (tar.gz)
+        shell: bash
+        run: |
+          set -euo pipefail
+          tar -czf reports/mermaid-rendered-diagrams.tar.gz \
+            docs/diagrams/rendered \
+            reports/DIAGRAM_RENDER_MANIFEST.txt
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: mermaid-rendered-diagrams
+          path: reports/mermaid-rendered-diagrams.tar.gz
+          if-no-files-found: error
+
+      - name: Job summary
+        if: always()
+        shell: bash
+        run: |
+          {
+            echo "### Mermaid diagrams rendered"
+            echo ""
+            echo "- Inputs: \`docs/diagrams/*.mmd\`"
+            echo "- Outputs: \`docs/diagrams/rendered/svg\`, \`docs/diagrams/rendered/png\`"
+            echo ""
+            echo "Artifact uploaded: **mermaid-rendered-diagrams** (single tar.gz)"
+          } >> "$GITHUB_STEP_SUMMARY"
