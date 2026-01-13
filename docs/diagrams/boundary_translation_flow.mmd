@@ -1,0 +1,17 @@
+%% Diagram 3: Boundary–Translation integrity loop
+%% Caption clarifies this is a constraint diagram, not a workflow
+
+flowchart LR
+  BD["Boundary"] -->|enablesTranslation| TR["TranslationProcess"]
+  TR -->|transformsMeaningAcross| BD
+
+  TR -->|sourceSystem| SS["SemioticSystem (source)"]
+  TR -->|targetSystem| TT["SemioticSystem (target)"]
+
+  TR --- INV["invertible = false"]:::constraint
+  TR --- ASYM["sourceSystem ≠ targetSystem"]:::constraint
+
+  NOTE["Constraint diagram:\narrows represent required relations,\nnot causal sequence"]:::note
+
+  classDef constraint stroke-dasharray: 5 5;
+  classDef note stroke-dasharray: 3 3;
