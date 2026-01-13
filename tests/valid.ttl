@@ -1,0 +1,66 @@
+@prefix : <https://semiohub.org/ont/semiosphere#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+#################################################################
+# Example data: VALID minimal graph (should pass SHACL)
+# Filename suggestion: semiosphere_example_valid.ttl
+#
+# Notes:
+# - Provides 2 semiotic systems (heterogeneity)
+# - Provides 1 boundary enabling translation with bidirectional link
+# - Provides time-indexed RoleAssignment
+# - Provides NonSemioticOutside placeholder (not a SemioticEntity)
+#################################################################
+
+:ctx1 a :SemiosphereContext .
+
+:sysA a :SemioticSystem, :PrimaryModelingSystem ;
+  :dependsOnContext :ctx1 ;
+  :inContext :ctx1 .
+
+:sysB a :SemioticSystem, :SecondaryModelingSystem ;
+  :dependsOnContext :ctx1 ;
+  :inContext :ctx1 .
+
+:ctx1 :containsSystem :sysA, :sysB .
+
+:b1 a :Boundary ;
+  :dependsOnContext :ctx1 ;
+  :inContext :ctx1 ;
+  :enablesTranslation :tr1 ;
+  :mediates :tr1 .
+
+:ctx1 :boundedBy :b1 ;
+  :adjacentOutside :outside1 .
+
+:outside1 a :NonSemioticOutside .
+
+:tr1 a :TranslationProcess ;
+  :dependsOnContext :ctx1 ;
+  :inContext :ctx1 ;
+  :invertible "false"^^xsd:boolean ;
+  :sourceSystem :sysA ;
+  :targetSystem :sysB ;
+  :transformsMeaningAcross :b1 .
+
+:dlg1 a :DialogueProcess ;
+  :dependsOnContext :ctx1 ;
+  :inContext :ctx1 ;
+  :hasMemory "true"^^xsd:boolean .
+
+:ra1 a :RoleAssignment ;
+  :assignmentContext :ctx1 ;
+  :assignedEntity :sysB ;
+  :assignedRole :PeripheryRole ;
+  :timeStart "2026-01-01T00:00:00Z"^^xsd:dateTime ;
+  :timeEnd   "2026-12-31T23:59:59Z"^^xsd:dateTime .
+
+:exp1 a :ExplosionEvent ;
+  :inContext :ctx1 ;
+  :predictable "false"^^xsd:boolean ;
+  :generatesText :t1 .
+
+:t1 a :Text ;
+  :dependsOnContext :ctx1 ;
+  :inContext :ctx1 .
