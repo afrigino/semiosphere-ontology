@@ -1,0 +1,130 @@
+name: SHACL Validation
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  shacl:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: "pip"
+
+      - name: Install pySHACL + RDFLib
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install pyshacl rdflib
+
+      - name: Prepare report directory
+        run: |
+          mkdir -p reports/invalid
+
+      - name: Validate valid graph (must PASS)
+        run: |
+          pyshacl \
+            -s shacl/semiosphere.shacl.ttl \
+            -d tests/valid.ttl \
+            --format turtle \
+            --output reports/report_valid.ttl
+
+      - name: Validate invalid graphs (each must FAIL)
+        shell: bash
+        run: |
+          set -euo pipefail
+          shopt -s nullglob
+
+          total=0
+          bad_passes=0
+
+          for f in tests/invalid/*.ttl; do
+            total=$((total+1))
+            base="$(basename "$f" .ttl)"
+            out="reports/invalid/report_${base}.ttl"
+
+            echo "Running SHACL on $f (expected to FAIL)..."
+
+            # If pyshacl returns success here, that is a failure of the test suite.
+            if pyshacl \
+              -s shacl/semiosphere.shacl.ttl \
+              -d "$f" \
+              --format turtle \
+              --output "$out"
+            then
+              echo "ERROR: $f unexpectedly PASSED validation."
+              bad_passes=$((bad_passes+1))
+            else
+              echo "OK: $f failed as expected."
+            fi
+
+            echo ""
+          done
+
+          if [ "$total" -eq 0 ]; then
+            echo "ERROR: No invalid test files found in tests/invalid/*.ttl"
+            exit 1
+          fi
+
+          if [ "$bad_passes" -ne 0 ]; then
+            echo "ERROR: One or more invalid test files passed unexpectedly."
+            exit 1
+          fi
+
+      - name: Create consolidated artifact (single file)
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          cat > reports/ALL_REPORTS.ttl <<'EOF'
+          @prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+          @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+          @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+          @prefix sh: <http://www.w3.org/ns/shacl#> .
+
+          # Consolidated SHACL validation outputs.
+          # This file concatenates the turtle reports produced by pySHACL.
+          EOF
+
+          echo "" >> reports/ALL_REPORTS.ttl
+          echo "# === VALID REPORT ===" >> reports/ALL_REPORTS.ttl
+          echo "" >> reports/ALL_REPORTS.ttl
+          cat reports/report_valid.ttl >> reports/ALL_REPORTS.ttl
+
+          echo "" >> reports/ALL_REPORTS.ttl
+          echo "# === INVALID REPORTS (each should contain violations) ===" >> reports/ALL_REPORTS.ttl
+          echo "" >> reports/ALL_REPORTS.ttl
+
+          for r in reports/invalid/*.ttl; do
+            echo "" >> reports/ALL_REPORTS.ttl
+            echo "# --- $(basename "$r") ---" >> reports/ALL_REPORTS.ttl
+            echo "" >> reports/ALL_REPORTS.ttl
+            cat "$r" >> reports/ALL_REPORTS.ttl
+          done
+
+      - name: Upload single consolidated artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: shacl-validation-report
+          path: reports/ALL_REPORTS.ttl
+          if-no-files-found: error
+
+      - name: Job summary
+        if: always()
+        shell: bash
+        run: |
+          {
+            echo "### SHACL validation completed"
+            echo ""
+            echo "- Shapes: \`shacl/semiosphere.shacl.ttl\`"
+            echo "- Valid data: \`tests/valid.ttl\` (must pass)"
+            echo "- Invalid data: \`tests/invalid/*.ttl\` (must fail)"
+            echo ""
+            echo "Artifact uploaded: **shacl-validation-report** (single consolidated Turtle file)"
+          } >> "$GITHUB_STEP_SUMMARY"
