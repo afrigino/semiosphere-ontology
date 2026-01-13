@@ -1,0 +1,352 @@
+@prefix : <https://semiohub.org/ont/semiosphere#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix skos: <http://www.w3.org/2004/02/skos/core#> .
+@prefix dcterms: <http://purl.org/dc/terms/> .
+
+#################################################################
+# Ontology: Semiosphere (Lotman) — draft OWL/Turtle schema
+#################################################################
+
+:SemiosphereOntology
+  a owl:Ontology ;
+  dcterms:title "Semiosphere Ontology (Lotman) — Draft Schema" ;
+  dcterms:description """
+Models key vocabulary from Juri Lotman’s semiosphere theory.
+Guardrails (normative modeling constraints):
+1) Semiosphere is a contextual field, not a simple object.
+2) Parts depend on the whole (semiotic systems depend on semiosphere).
+3) Core/periphery are time-indexed roles, not fixed classes.
+4) Boundaries are productive interfaces enabling translation.
+5) Translation is asymmetric and non-invertible by default.
+6) Dialogue is a process with memory, not a single transaction.
+7) Explosion is not predicted; it is identified post hoc.
+8) Nonsemiotic reality is a constructed outside (an undefined remainder).
+9) Meaning is relational, not intrinsic.
+10) Heterogeneity is constitutive.
+11) Time-awareness is required for core distinctions.
+12) Prefer relations over fixed attributes when possible.
+""" ;
+  owl:versionInfo "0.1.0-draft" .
+
+#################################################################
+# Classes
+#################################################################
+
+:Context
+  a owl:Class ;
+  rdfs:label "Context" ;
+  rdfs:comment "A framing environment in which entities and processes are situated." .
+
+:SemiosphereContext
+  a owl:Class ;
+  rdfs:subClassOf :Context ;
+  rdfs:label "Semiosphere (Context)" ;
+  rdfs:comment "Contextual field enabling semiosis; not a mere aggregate of parts." ;
+  skos:exactMatch "Lotman: semiosphere" .
+
+:SemioticEntity
+  a owl:Class ;
+  rdfs:label "Semiotic Entity" ;
+  rdfs:comment "Anything modeled as existing within a semiosphere (systems, texts, boundaries, etc.)." .
+
+:SemioticSystem
+  a owl:Class ;
+  rdfs:subClassOf :SemioticEntity ;
+  rdfs:label "Semiotic System" ;
+  rdfs:comment "A language/code/modeling system operating within a semiosphere." .
+
+:Text
+  a owl:Class ;
+  rdfs:subClassOf :SemioticEntity ;
+  rdfs:label "Text" ;
+  rdfs:comment "Any coherent semiotic formation carrying integral meaning (broad Lotmanian sense)." .
+
+:MetaText
+  a owl:Class ;
+  rdfs:subClassOf :Text ;
+  rdfs:label "Meta-text (Self-description)" ;
+  rdfs:comment "Texts that describe or formalize a culture/system (grammars, poetics, laws, etc.)." .
+
+:ModelingSystem
+  a owl:Class ;
+  rdfs:subClassOf :SemioticSystem ;
+  rdfs:label "Modeling System" ;
+  rdfs:comment "System organizing experience/meaning (primary: natural language; secondary: culture built upon language)." .
+
+:PrimaryModelingSystem
+  a owl:Class ;
+  rdfs:subClassOf :ModelingSystem ;
+  rdfs:label "Primary Modeling System" ;
+  rdfs:comment "Natural language (Lotman/Tartu School)." .
+
+:SecondaryModelingSystem
+  a owl:Class ;
+  rdfs:subClassOf :ModelingSystem ;
+  rdfs:label "Secondary Modeling System" ;
+  rdfs:comment "Cultural systems built upon language (art, myth, religion, science, law, etc.)." .
+
+:Boundary
+  a owl:Class ;
+  rdfs:subClassOf :SemioticEntity ;
+  rdfs:label "Boundary" ;
+  rdfs:comment "Productive interface with bilingual/translatable filters; site of translation and meaning generation." .
+
+:OutsideDomain
+  a owl:Class ;
+  rdfs:label "Outside Domain" ;
+  rdfs:comment "A limit concept for what is outside the semiosphere’s current semiotization." .
+
+:NonSemioticOutside
+  a owl:Class ;
+  rdfs:subClassOf :OutsideDomain ;
+  rdfs:label "Nonsemiotic Reality (Constructed Outside)" ;
+  rdfs:comment "An undefined remainder relative to a semiosphere; do not model as a fully populated external world." .
+
+:Process
+  a owl:Class ;
+  rdfs:label "Process" ;
+  rdfs:comment "Temporal, unfolding activity (translation, dialogue, etc.)." .
+
+:TranslationProcess
+  a owl:Class ;
+  rdfs:subClassOf :Process ;
+  rdfs:label "Translation" ;
+  rdfs:comment "Meaning transformation across semiotic boundaries; asymmetric, non-lossless by default." .
+
+:DialogueProcess
+  a owl:Class ;
+  rdfs:subClassOf :Process ;
+  rdfs:label "Dialogue" ;
+  rdfs:comment "Ongoing interaction marked by asymmetry, partial opacity, and memory; not a single exchange." .
+
+:Event
+  a owl:Class ;
+  rdfs:label "Event" ;
+  rdfs:comment "A temporally localized occurrence." .
+
+:ExplosionEvent
+  a owl:Class ;
+  rdfs:subClassOf :Event ;
+  rdfs:label "Explosion" ;
+  rdfs:comment "Unpredictable mode of cultural change; must be identified retrospectively, not predicted." .
+
+:Role
+  a owl:Class ;
+  rdfs:label "Role" ;
+  rdfs:comment "A position/state that entities can take, often time-indexed (e.g., core/periphery)." .
+
+:CoreRole
+  a owl:Class ;
+  rdfs:subClassOf :Role ;
+  rdfs:label "Core Role" ;
+  rdfs:comment "Dominant, self-describing position within a semiosphere (time-indexed, reversible)." .
+
+:PeripheryRole
+  a owl:Class ;
+  rdfs:subClassOf :Role ;
+  rdfs:label "Periphery Role" ;
+  rdfs:comment "Marginal/emergent/foreign-facing position (time-indexed, reversible)." .
+
+:RoleAssignment
+  a owl:Class ;
+  rdfs:label "Role Assignment" ;
+  rdfs:comment "Reified statement linking an entity to a role within a semiosphere over a time interval." .
+
+#################################################################
+# Object Properties
+#################################################################
+
+:inContext
+  a owl:ObjectProperty ;
+  rdfs:label "in context" ;
+  rdfs:domain :SemioticEntity ;
+  rdfs:range :Context ;
+  rdfs:comment "Places an entity within a contextual field (e.g., a semiosphere)." .
+
+:dependsOnContext
+  a owl:ObjectProperty ;
+  rdfs:label "depends on context" ;
+  rdfs:domain :SemioticEntity ;
+  rdfs:range :Context ;
+  rdfs:comment "Guardrail: semiotic entities are not modeled as independent of the semiosphere." .
+
+:containsSystem
+  a owl:ObjectProperty ;
+  rdfs:label "contains system" ;
+  rdfs:domain :SemiosphereContext ;
+  rdfs:range :SemioticSystem ;
+  rdfs:comment "Semiosphere contains semiotic systems (languages/codes/modeling systems)." .
+
+:containsText
+  a owl:ObjectProperty ;
+  rdfs:label "contains text" ;
+  rdfs:domain :SemiosphereContext ;
+  rdfs:range :Text .
+
+:boundedBy
+  a owl:ObjectProperty ;
+  rdfs:label "bounded by" ;
+  rdfs:domain :SemiosphereContext ;
+  rdfs:range :Boundary ;
+  rdfs:comment "Links a semiosphere to its boundary interfaces." .
+
+:adjacentOutside
+  a owl:ObjectProperty ;
+  rdfs:label "adjacent outside" ;
+  rdfs:domain :SemiosphereContext ;
+  rdfs:range :OutsideDomain ;
+  rdfs:comment "Points to an outside domain as constructed relative to this semiosphere." .
+
+:mediates
+  a owl:ObjectProperty ;
+  rdfs:label "mediates" ;
+  rdfs:domain :Boundary ;
+  rdfs:range :Process ;
+  rdfs:comment "Boundaries mediate processes (notably translation)." .
+
+:enablesTranslation
+  a owl:ObjectProperty ;
+  rdfs:label "enables translation" ;
+  rdfs:domain :Boundary ;
+  rdfs:range :TranslationProcess .
+
+:transformsMeaningAcross
+  a owl:ObjectProperty ;
+  rdfs:label "transforms meaning across" ;
+  rdfs:domain :TranslationProcess ;
+  rdfs:range :Boundary ;
+  rdfs:comment "Translation occurs across/through boundaries (filters)." .
+
+:sourceSystem
+  a owl:ObjectProperty ;
+  rdfs:label "source system" ;
+  rdfs:domain :TranslationProcess ;
+  rdfs:range :SemioticSystem .
+
+:targetSystem
+  a owl:ObjectProperty ;
+  rdfs:label "target system" ;
+  rdfs:domain :TranslationProcess ;
+  rdfs:range :SemioticSystem .
+
+:dialoguesWith
+  a owl:ObjectProperty ;
+  rdfs:label "dialogues with" ;
+  rdfs:domain :SemioticSystem ;
+  rdfs:range :SemioticSystem ;
+  rdfs:comment "Interaction relation (use DialogueProcess for time/memory-sensitive modeling)." ;
+  owl:SymmetricProperty true .
+
+:generatesText
+  a owl:ObjectProperty ;
+  rdfs:label "generates text" ;
+  rdfs:domain :Event ;
+  rdfs:range :Text ;
+  rdfs:comment "Events (including explosions) can generate texts or reconfigure textual regimes." .
+
+:selfDescribesVia
+  a owl:ObjectProperty ;
+  rdfs:label "self-describes via" ;
+  rdfs:domain :SemioticSystem ;
+  rdfs:range :MetaText .
+
+# Role assignment pattern
+:assignmentContext
+  a owl:ObjectProperty ;
+  rdfs:label "assignment context" ;
+  rdfs:domain :RoleAssignment ;
+  rdfs:range :SemiosphereContext .
+
+:assignedEntity
+  a owl:ObjectProperty ;
+  rdfs:label "assigned entity" ;
+  rdfs:domain :RoleAssignment ;
+  rdfs:range :SemioticEntity .
+
+:assignedRole
+  a owl:ObjectProperty ;
+  rdfs:label "assigned role" ;
+  rdfs:domain :RoleAssignment ;
+  rdfs:range :Role .
+
+#################################################################
+# Data Properties
+#################################################################
+
+:timeStart
+  a owl:DatatypeProperty ;
+  rdfs:label "time start" ;
+  rdfs:domain :RoleAssignment ;
+  rdfs:range xsd:dateTime .
+
+:timeEnd
+  a owl:DatatypeProperty ;
+  rdfs:label "time end" ;
+  rdfs:domain :RoleAssignment ;
+  rdfs:range xsd:dateTime .
+
+:hasMemory
+  a owl:DatatypeProperty ;
+  rdfs:label "has memory" ;
+  rdfs:domain :DialogueProcess ;
+  rdfs:range xsd:boolean ;
+  rdfs:comment "Guardrail: dialogue should be modeled as memory-bearing." .
+
+:invertible
+  a owl:DatatypeProperty ;
+  rdfs:label "invertible" ;
+  rdfs:domain :TranslationProcess ;
+  rdfs:range xsd:boolean ;
+  rdfs:comment "Guardrail: translation invertible=false by default." .
+
+:predictable
+  a owl:DatatypeProperty ;
+  rdfs:label "predictable" ;
+  rdfs:domain :ExplosionEvent ;
+  rdfs:range xsd:boolean ;
+  rdfs:comment "Guardrail: explosion predictable=false by definition." .
+
+#################################################################
+# Minimal Axioms / Defaults (expressed conservatively)
+#################################################################
+
+# Translation is generally non-invertible (soft default; enforce in data/SHACL if desired)
+:TranslationProcess rdfs:subClassOf [
+  a owl:Restriction ;
+  owl:onProperty :invertible ;
+  owl:hasValue "false"^^xsd:boolean
+] .
+
+# Dialogue is memory-bearing (soft default)
+:DialogueProcess rdfs:subClassOf [
+  a owl:Restriction ;
+  owl:onProperty :hasMemory ;
+  owl:hasValue "true"^^xsd:boolean
+] .
+
+# Explosion is not predictable (soft default)
+:ExplosionEvent rdfs:subClassOf [
+  a owl:Restriction ;
+  owl:onProperty :predictable ;
+  owl:hasValue "false"^^xsd:boolean
+] .
+
+#################################################################
+# Notes for implementers (non-logical, guardrail documentation)
+#################################################################
+
+:GuardrailNote
+  a owl:AnnotationProperty ;
+  rdfs:label "guardrail note" .
+
+:SemiosphereContext :GuardrailNote
+  "Model Semiosphere as a context (named graph or context object). Avoid treating it as merely another instance-level thing with intrinsic properties." .
+
+:NonSemioticOutside :GuardrailNote
+  "Do not populate as an external world. Use as a placeholder for 'not (yet) semiotized' remainder relative to a context." .
+
+:RoleAssignment :GuardrailNote
+  "Use RoleAssignment to time-index core/periphery and avoid fixed class membership." .
