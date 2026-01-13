@@ -1,0 +1,333 @@
+@prefix : <https://semiohub.org/ont/semiosphere#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+#################################################################
+# tests/invalid/invalid_all.ttl
+#
+# Intentionally INVALID unit tests (one violation per block).
+# Use with: pyshacl -s shacl/semiosphere.shacl.ttl -d tests/invalid/invalid_all.ttl
+#
+# Note: These blocks can coexist in one file. If your validator halts
+# early or you prefer single-violation files, split by block.
+#################################################################
+
+############################
+# V1 (C1): SemiosphereContext typed as SemioticEntity (forbidden)
+############################
+:ctx_bad1 a :SemiosphereContext, :SemioticEntity .
+
+############################
+# V2 (C2): SemioticEntity missing dependsOnContext (Text lacks dependsOnContext)
+############################
+:ctx_bad2 a :SemiosphereContext .
+
+:t_bad2 a :Text ;
+  :inContext :ctx_bad2 .
+  # violation: missing :dependsOnContext :ctx_bad2
+
+############################
+# V3 (C4/C11): Boundary missing enablesTranslation and mediates
+############################
+:ctx_bad3 a :SemiosphereContext .
+
+:sys_bad3a a :SemioticSystem ;
+  :dependsOnContext :ctx_bad3 ;
+  :inContext :ctx_bad3 .
+
+:sys_bad3b a :SemioticSystem ;
+  :dependsOnContext :ctx_bad3 ;
+  :inContext :ctx_bad3 .
+
+:ctx_bad3 :containsSystem :sys_bad3a, :sys_bad3b .
+
+:b_bad3 a :Boundary ;
+  :dependsOnContext :ctx_bad3 ;
+  :inContext :ctx_bad3 .
+
+:ctx_bad3 :boundedBy :b_bad3 .
+# violation: :b_bad3 has no :enablesTranslation and no :mediates
+
+############################
+# V4 (C5): Translation invertible=true (must be false)
+############################
+:ctx_bad4 a :SemiosphereContext .
+
+:sys_bad4a a :SemioticSystem ;
+  :dependsOnContext :ctx_bad4 ;
+  :inContext :ctx_bad4 .
+
+:sys_bad4b a :SemioticSystem ;
+  :dependsOnContext :ctx_bad4 ;
+  :inContext :ctx_bad4 .
+
+:ctx_bad4 :containsSystem :sys_bad4a, :sys_bad4b .
+
+:b_bad4 a :Boundary ;
+  :dependsOnContext :ctx_bad4 ;
+  :inContext :ctx_bad4 ;
+  :enablesTranslation :tr_bad4 ;
+  :mediates :tr_bad4 .
+
+:ctx_bad4 :boundedBy :b_bad4 .
+
+:tr_bad4 a :TranslationProcess ;
+  :dependsOnContext :ctx_bad4 ;
+  :inContext :ctx_bad4 ;
+  :invertible "true"^^xsd:boolean ;      # violation
+  :sourceSystem :sys_bad4a ;
+  :targetSystem :sys_bad4b ;
+  :transformsMeaningAcross :b_bad4 .
+
+############################
+# V5 (C5): Translation source == target (must be distinct)
+############################
+:ctx_bad5 a :SemiosphereContext .
+
+:sys_bad5 a :SemioticSystem ;
+  :dependsOnContext :ctx_bad5 ;
+  :inContext :ctx_bad5 .
+
+:sys_bad5b a :SemioticSystem ;
+  :dependsOnContext :ctx_bad5 ;
+  :inContext :ctx_bad5 .
+
+:ctx_bad5 :containsSystem :sys_bad5, :sys_bad5b .
+
+:b_bad5 a :Boundary ;
+  :dependsOnContext :ctx_bad5 ;
+  :inContext :ctx_bad5 ;
+  :enablesTranslation :tr_bad5 ;
+  :mediates :tr_bad5 .
+
+:ctx_bad5 :boundedBy :b_bad5 .
+
+:tr_bad5 a :TranslationProcess ;
+  :dependsOnContext :ctx_bad5 ;
+  :inContext :ctx_bad5 ;
+  :invertible "false"^^xsd:boolean ;
+  :sourceSystem :sys_bad5 ;
+  :targetSystem :sys_bad5 ;             # violation
+  :transformsMeaningAcross :b_bad5 .
+
+############################
+# V6 (Integrity): Boundary enablesTranslation but translation missing transformsMeaningAcross
+############################
+:ctx_bad6 a :SemiosphereContext .
+
+:sys_bad6a a :SemioticSystem ;
+  :dependsOnContext :ctx_bad6 ;
+  :inContext :ctx_bad6 .
+
+:sys_bad6b a :SemioticSystem ;
+  :dependsOnContext :ctx_bad6 ;
+  :inContext :ctx_bad6 .
+
+:ctx_bad6 :containsSystem :sys_bad6a, :sys_bad6b .
+
+:b_bad6 a :Boundary ;
+  :dependsOnContext :ctx_bad6 ;
+  :inContext :ctx_bad6 ;
+  :enablesTranslation :tr_bad6 ;
+  :mediates :tr_bad6 .
+
+:ctx_bad6 :boundedBy :b_bad6 .
+
+:tr_bad6 a :TranslationProcess ;
+  :dependsOnContext :ctx_bad6 ;
+  :inContext :ctx_bad6 ;
+  :invertible "false"^^xsd:boolean ;
+  :sourceSystem :sys_bad6a ;
+  :targetSystem :sys_bad6b .
+  # violation: missing :transformsMeaningAcross :b_bad6
+
+############################
+# V7 (C6): Dialogue hasMemory=false (must be true)
+############################
+:ctx_bad7 a :SemiosphereContext .
+
+:sys_bad7a a :SemioticSystem ;
+  :dependsOnContext :ctx_bad7 ;
+  :inContext :ctx_bad7 .
+
+:sys_bad7b a :SemioticSystem ;
+  :dependsOnContext :ctx_bad7 ;
+  :inContext :ctx_bad7 .
+
+:ctx_bad7 :containsSystem :sys_bad7a, :sys_bad7b .
+
+:b_bad7 a :Boundary ;
+  :dependsOnContext :ctx_bad7 ;
+  :inContext :ctx_bad7 ;
+  :enablesTranslation :tr_bad7 ;
+  :mediates :tr_bad7 .
+
+:ctx_bad7 :boundedBy :b_bad7 .
+
+:tr_bad7 a :TranslationProcess ;
+  :dependsOnContext :ctx_bad7 ;
+  :inContext :ctx_bad7 ;
+  :invertible "false"^^xsd:boolean ;
+  :sourceSystem :sys_bad7a ;
+  :targetSystem :sys_bad7b ;
+  :transformsMeaningAcross :b_bad7 .
+
+:dlg_bad7 a :DialogueProcess ;
+  :dependsOnContext :ctx_bad7 ;
+  :inContext :ctx_bad7 ;
+  :hasMemory "false"^^xsd:boolean .     # violation
+
+############################
+# V8 (C7): Explosion predictable=true (must be false)
+############################
+:ctx_bad8 a :SemiosphereContext .
+
+:sys_bad8a a :SemioticSystem ;
+  :dependsOnContext :ctx_bad8 ;
+  :inContext :ctx_bad8 .
+
+:sys_bad8b a :SemioticSystem ;
+  :dependsOnContext :ctx_bad8 ;
+  :inContext :ctx_bad8 .
+
+:ctx_bad8 :containsSystem :sys_bad8a, :sys_bad8b .
+
+:b_bad8 a :Boundary ;
+  :dependsOnContext :ctx_bad8 ;
+  :inContext :ctx_bad8 ;
+  :enablesTranslation :tr_bad8 ;
+  :mediates :tr_bad8 .
+
+:ctx_bad8 :boundedBy :b_bad8 .
+
+:tr_bad8 a :TranslationProcess ;
+  :dependsOnContext :ctx_bad8 ;
+  :inContext :ctx_bad8 ;
+  :invertible "false"^^xsd:boolean ;
+  :sourceSystem :sys_bad8a ;
+  :targetSystem :sys_bad8b ;
+  :transformsMeaningAcross :b_bad8 .
+
+:exp_bad8 a :ExplosionEvent ;
+  :inContext :ctx_bad8 ;
+  :predictable "true"^^xsd:boolean ;    # violation
+  :generatesText :t_bad8 .
+
+:t_bad8 a :Text ;
+  :dependsOnContext :ctx_bad8 ;
+  :inContext :ctx_bad8 .
+
+############################
+# V9 (C8): NonSemioticOutside typed as SemioticEntity (forbidden)
+############################
+:ctx_bad9 a :SemiosphereContext .
+
+:sys_bad9a a :SemioticSystem ;
+  :dependsOnContext :ctx_bad9 ;
+  :inContext :ctx_bad9 .
+
+:sys_bad9b a :SemioticSystem ;
+  :dependsOnContext :ctx_bad9 ;
+  :inContext :ctx_bad9 .
+
+:ctx_bad9 :containsSystem :sys_bad9a, :sys_bad9b .
+
+:b_bad9 a :Boundary ;
+  :dependsOnContext :ctx_bad9 ;
+  :inContext :ctx_bad9 ;
+  :enablesTranslation :tr_bad9 ;
+  :mediates :tr_bad9 .
+
+:ctx_bad9 :boundedBy :b_bad9 ;
+  :adjacentOutside :outside_bad9 .
+
+:outside_bad9 a :NonSemioticOutside, :SemioticEntity .  # violation
+
+:tr_bad9 a :TranslationProcess ;
+  :dependsOnContext :ctx_bad9 ;
+  :inContext :ctx_bad9 ;
+  :invertible "false"^^xsd:boolean ;
+  :sourceSystem :sys_bad9a ;
+  :targetSystem :sys_bad9b ;
+  :transformsMeaningAcross :b_bad9 .
+
+############################
+# V10 (C8): More than one adjacentOutside (maxCount 1)
+############################
+:ctx_bad10 a :SemiosphereContext ;
+  :adjacentOutside :outside_bad10a, :outside_bad10b .    # violation
+
+:outside_bad10a a :OutsideDomain .
+:outside_bad10b a :OutsideDomain .
+
+############################
+# V11 (C10): Heterogeneity violated (only 1 system in context)
+############################
+:ctx_bad11 a :SemiosphereContext .
+
+:sys_bad11 a :SemioticSystem ;
+  :dependsOnContext :ctx_bad11 ;
+  :inContext :ctx_bad11 .
+
+:ctx_bad11 :containsSystem :sys_bad11 .                 # violation (<2)
+
+############################
+# V12 (C11): Semiosphere missing Boundary (minCount 1)
+############################
+:ctx_bad12 a :SemiosphereContext .
+
+:sys_bad12a a :SemioticSystem ;
+  :dependsOnContext :ctx_bad12 ;
+  :inContext :ctx_bad12 .
+
+:sys_bad12b a :SemioticSystem ;
+  :dependsOnContext :ctx_bad12 ;
+  :inContext :ctx_bad12 .
+
+:ctx_bad12 :containsSystem :sys_bad12a, :sys_bad12b .
+# violation: no :boundedBy triples for :ctx_bad12
+
+############################
+# V13 (C3 time): RoleAssignment timeEnd < timeStart
+############################
+:ctx_bad13 a :SemiosphereContext .
+
+:sys_bad13a a :SemioticSystem ;
+  :dependsOnContext :ctx_bad13 ;
+  :inContext :ctx_bad13 .
+
+:sys_bad13b a :SemioticSystem ;
+  :dependsOnContext :ctx_bad13 ;
+  :inContext :ctx_bad13 .
+
+:ctx_bad13 :containsSystem :sys_bad13a, :sys_bad13b .
+
+:ra_bad13 a :RoleAssignment ;
+  :assignmentContext :ctx_bad13 ;
+  :assignedEntity :sys_bad13a ;
+  :assignedRole :CoreRole ;
+  :timeStart "2026-12-31T00:00:00Z"^^xsd:dateTime ;
+  :timeEnd   "2026-01-01T00:00:00Z"^^xsd:dateTime .     # violation
+
+############################
+# V14 (C3 context consistency): RoleAssignment assignedEntity depends on DIFFERENT context
+############################
+:ctx_bad14_a a :SemiosphereContext .
+:ctx_bad14_b a :SemiosphereContext .
+
+:sys_bad14 a :SemioticSystem ;
+  :dependsOnContext :ctx_bad14_b ;   # depends on B...
+  :inContext :ctx_bad14_b .
+
+:ra_bad14 a :RoleAssignment ;
+  :assignmentContext :ctx_bad14_a ;  # ...but assignment context is A (violation)
+  :assignedEntity :sys_bad14 ;
+  :assignedRole :PeripheryRole ;
+  :timeStart "2026-01-01T00:00:00Z"^^xsd:dateTime ;
+  :timeEnd   "2026-12-31T23:59:59Z"^^xsd:dateTime .
+
+############################
+# V15 (C3 strict): Creating an individual of CoreRole is forbidden
+############################
+:core_role_individual_bad15 a :CoreRole .
+# violation: NoCoreRoleIndividualsShape forbids CoreRole individuals (other than the class itself)
