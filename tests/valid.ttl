@@ -43,7 +43,7 @@
   :invertible "false"^^xsd:boolean ;
   :sourceSystem :sysA ;
   :targetSystem :sysB ;
-  :transformsMeaningAcross :b1 
+  :transformsMeaningAcross :b1 .
 
 :ra1 a :RoleAssignment ;
   :assignmentContext :ctx1 ;
