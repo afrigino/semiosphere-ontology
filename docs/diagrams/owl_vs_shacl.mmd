@@ -1,0 +1,33 @@
+%% Diagram 4: OWL vs SHACL responsibilities
+%% Enforcement authority clarified
+
+flowchart TB
+  subgraph OWL["OWL Layer (Vocabulary)\nont/semiosphere.owl.ttl"]
+    direction TB
+    OWL1["Defines classes\n(SemiosphereContext, SemioticSystem, Text, Boundary, Process, Event)"]
+    OWL2["Defines properties\n(dependsOnContext, boundedBy, enablesTranslation, etc.)"]
+    OWL3["Conservative axioms / defaults\n(soft constraints)"]
+  end
+
+  subgraph SHACL["SHACL Layer (Guardrails)\nshacl/semiosphere.shacl.ttl"]
+    direction TB
+    S1["Semiosphere is Context\n(not SemioticEntity)"]
+    S2["dependsOnContext required\nfor SemioticEntity"]
+    S3["RoleAssignment time-indexing\n(core/periphery as roles)"]
+    S4["Boundary ↔ Translation integrity\n+ invertible=false + asymmetry"]
+    S5["Explosion predictable=false\n(post-hoc only)"]
+    S6["Outside placeholder + heterogeneity\n+ boundary minimums"]
+  end
+
+  subgraph CI["Tests + CI"]
+    direction TB
+    V["tests/valid.ttl\nMUST PASS"]
+    I["tests/invalid/*.ttl\nMUST FAIL"]
+    R["Artifact: ALL_REPORTS.ttl\n(single consolidated report)"]
+  end
+
+  OWL -->|provides vocabulary| SHACL
+  SHACL -->|validation authority| V
+  SHACL -->|validation authority| I
+  V --> R
+  I --> R
