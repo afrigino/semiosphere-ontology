@@ -43,12 +43,7 @@
   :invertible "false"^^xsd:boolean ;
   :sourceSystem :sysA ;
   :targetSystem :sysB ;
-  :transformsMeaningAcross :b1 .
-
-:dlg1 a :DialogueProcess ;
-  :dependsOnContext :ctx1 ;
-  :inContext :ctx1 ;
-  :hasMemory "true"^^xsd:boolean .
+  :transformsMeaningAcross :b1 
 
 :ra1 a :RoleAssignment ;
   :assignmentContext :ctx1 ;
