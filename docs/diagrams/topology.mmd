@@ -1,0 +1,33 @@
+%% Diagram 1: Conceptual topology of the semiosphere
+%% Subtitle added to prevent objectification of the semiosphere
+
+flowchart TB
+  subgraph S["SemiosphereContext\n(Contextual field — not an entity, not enumerable)"]
+    direction TB
+
+    subgraph SYS["Heterogeneous Semiotic Systems (plural)"]
+      direction LR
+      A["SemioticSystem A\n(PrimaryModelingSystem)"]
+      B["SemioticSystem B\n(SecondaryModelingSystem)"]
+      C["SemioticSystem C\n(Other code / language)"]
+    end
+
+    T["Text\n(coherent semiotic formation — Lotmanian sense)"]
+
+    BD["Boundary\n(productive interface / bilingual filters)"]
+
+    TR["TranslationProcess\n(invertible = false)\nsourceSystem ≠ targetSystem"]
+
+    A -->|generates / contains| T
+    B -->|interacts with| T
+    BD -->|enablesTranslation| TR
+    TR -->|transformsMeaningAcross| BD
+    TR -->|sourceSystem| A
+    TR -->|targetSystem| B
+  end
+
+  OUT["OutsideDomain / NonSemioticOutside\n(constructed outside; placeholder)\nNOT a populated world"]:::outside
+
+  S ---|adjacentOutside| OUT
+
+  classDef outside stroke-dasharray: 5 5;
