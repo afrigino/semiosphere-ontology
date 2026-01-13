@@ -1,0 +1,14 @@
+%% Diagram 2: Core / Periphery as time-indexed roles
+%% Labels adjusted to reflect RoleAssignment pattern explicitly
+
+gantt
+  title Core and Periphery as Time-Indexed Role Assignments (not Fixed Classes)
+  dateFormat  YYYY-MM-DD
+  axisFormat  %Y-%m
+
+  section SemiosphereContext ctx1
+  RoleAssignment ra1: sysB assigned PeripheryRole   :a1, 2026-01-01, 2026-06-30
+  RoleAssignment ra2: sysB assigned CoreRole        :a2, 2026-07-01, 2026-12-31
+
+  section Guardrail
+  Roles are reversible over time                    :milestone, m1, 2026-07-01, 0d
