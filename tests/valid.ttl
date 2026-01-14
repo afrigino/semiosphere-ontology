@@ -46,6 +46,8 @@
   :transformsMeaningAcross :b1 .
 
 :ra1 a :RoleAssignment ;
+  :dependsOnContext :ctx1 ;
+  :inContext :ctx1 ;
   :assignmentContext :ctx1 ;
   :assignedEntity :sysB ;
   :assignedRole :PeripheryRole ;
@@ -53,6 +55,7 @@
   :timeEnd   "2026-12-31T23:59:59Z"^^xsd:dateTime .
 
 :exp1 a :ExplosionEvent ;
+  :dependsOnContext :ctx1 ;
   :inContext :ctx1 ;
   :predictable "false"^^xsd:boolean ;
   :generatesText :t1 .
