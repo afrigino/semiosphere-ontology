@@ -337,7 +337,7 @@
   sh:property [
     sh:path :adjacentOutside ;
     sh:maxCount 1 ;
-    sh:class :OutsideDomain ;
+    sh:class :NonSemioticOutside ;
     sh:message "Guardrail C8: Each SemiosphereContext should have at most one adjacentOutside placeholder."
   ] .
 
