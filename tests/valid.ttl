@@ -16,11 +16,11 @@
 
 :ctx1 a :SemiosphereContext .
 
-:sysA a :SemioticSystem, :PrimaryModelingSystem ;
+:sysA a :SemioticSystem, :PrimaryModelingSystem, :SemioticEntity ;
   :dependsOnContext :ctx1 ;
   :inContext :ctx1 .
 
-:sysB a :SemioticSystem, :SecondaryModelingSystem ;
+:sysB a :SemioticSystem, :SecondaryModelingSystem, :SemioticEntity ;
   :dependsOnContext :ctx1 ;
   :inContext :ctx1 .
 
