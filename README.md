@@ -68,3 +68,16 @@ Please cite the versioned DOI when referencing this work in publications.
 
 This repository is intended to function as a **canonical, citable reference artifact**.  
 Extensions and implementations should occur downstream, without altering the theoretical core.
+
+---
+
+## Contributing
+
+To maintain the integrity of this canonical reference artifact, the `main` branch is protected. All changes must:
+
+- Be submitted via pull request
+- Pass all CI validation checks (SHACL validation, diagram rendering, and branch protection checks)
+- Receive approval from code owners
+- Maintain theoretical alignment with Lotman's semiosphere framework
+
+See [`.github/BRANCH_PROTECTION.md`](.github/BRANCH_PROTECTION.md) for detailed branch protection configuration.

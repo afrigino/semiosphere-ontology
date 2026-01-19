@@ -1,0 +1,22 @@
+# CODEOWNERS
+# 
+# This file defines code ownership for the semiosphere-ontology repository.
+# Changes to files matching these patterns require approval from the specified owners.
+# 
+# See: https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/about-code-owners
+
+# Default owner for everything in the repository
+* @afrigino
+
+# Core ontology files require owner approval
+/ont/ @afrigino
+/shacl/ @afrigino
+
+# Tests require owner approval
+/tests/ @afrigino
+
+# Documentation may require owner approval
+/docs/ @afrigino
+
+# Workflow changes require owner approval
+/.github/ @afrigino
