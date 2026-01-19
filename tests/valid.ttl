@@ -38,6 +38,8 @@
 
 :outside1 a :NonSemioticOutside .
 
+:PeripheryRole a :Role .
+
 :tr1 a :TranslationProcess, :Process ;
   :dependsOnContext :ctx1 ;
   :inContext :ctx1 ;
