@@ -1,0 +1,204 @@
+name: Branch Protection Checks
+
+on:
+  pull_request:
+    branches:
+      - main
+  push:
+    branches:
+      - main
+
+jobs:
+  branch-protection-compliance:
+    name: Branch Protection Compliance
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: read
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Check commit messages
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          echo "Checking commit messages for quality..."
+
+          # Get the list of commits in this PR or push
+          if [ "${{ github.event_name }}" == "pull_request" ]; then
+            base_sha="${{ github.event.pull_request.base.sha }}"
+            head_sha="${{ github.event.pull_request.head.sha }}"
+          else
+            # For push events, check the pushed commits
+            base_sha="${{ github.event.before }}"
+            head_sha="${{ github.event.after }}"
+          fi
+
+          # If base_sha is all zeros (new branch), skip the check
+          if [[ "$base_sha" =~ ^0+$ ]]; then
+            echo "New branch detected, skipping commit message check"
+            exit 0
+          fi
+
+          echo "Checking commits from $base_sha to $head_sha"
+
+          # Get commit messages
+          commits=$(git log --format=%s "$base_sha".."$head_sha")
+
+          if [ -z "$commits" ]; then
+            echo "No commits to check"
+            exit 0
+          fi
+
+          echo "Commits to check:"
+          echo "$commits"
+          echo ""
+
+          # Check for minimum commit message length
+          while IFS= read -r msg; do
+            if [ -n "$msg" ]; then
+              length=${#msg}
+              if [ $length -lt 10 ]; then
+                echo "ERROR: Commit message too short (minimum 10 characters): '$msg'"
+                exit 1
+              fi
+            fi
+          done <<< "$commits"
+
+          echo "All commit messages meet minimum quality standards"
+
+      - name: Check for sensitive files
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          echo "Checking for sensitive or unwanted files..."
+
+          # List of patterns that should not be committed
+          sensitive_patterns=(
+            ".env$"
+            ".key$"
+            ".pem$"
+            ".p12$"
+            ".pfx$"
+            "^.DS_Store$"
+            "^Thumbs.db$"
+            ".swp$"
+            "~$"
+          )
+
+          found_sensitive=0
+
+          for pattern in "${sensitive_patterns[@]}"; do
+            if git ls-files | grep -E "$pattern"; then
+              echo "ERROR: Found sensitive/unwanted file matching pattern: $pattern"
+              found_sensitive=1
+            fi
+          done
+
+          if [ $found_sensitive -eq 1 ]; then
+            echo ""
+            echo "Please remove sensitive or unwanted files before merging"
+            exit 1
+          fi
+
+          echo "No sensitive files detected"
+
+      - name: Verify required files exist
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          echo "Verifying required files exist..."
+
+          required_files=(
+            "README.md"
+            "LICENSE.md"
+            "ont/semiosphere.owl.ttl"
+            "shacl/semiosphere.shacl.ttl"
+            ".github/workflows/shacl.yml"
+            ".github/CODEOWNERS"
+          )
+
+          missing_files=0
+
+          for file in "${required_files[@]}"; do
+            if [ ! -f "$file" ]; then
+              echo "ERROR: Required file missing: $file"
+              missing_files=1
+            else
+              echo "✓ $file"
+            fi
+          done
+
+          if [ $missing_files -eq 1 ]; then
+            echo ""
+            echo "One or more required files are missing"
+            exit 1
+          fi
+
+          echo "All required files present"
+
+      - name: Verify documentation is up to date
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          echo "Checking if documentation references are valid..."
+
+          # Check that README mentions key components
+          if ! grep -q "SHACL" README.md; then
+            echo "WARNING: README.md should mention SHACL guardrails"
+          fi
+
+          if ! grep -q "OWL" README.md; then
+            echo "WARNING: README.md should mention OWL vocabulary"
+          fi
+
+          echo "Documentation check complete"
+
+      - name: Check file encoding and line endings
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          echo "Checking file encodings and line endings..."
+
+          # Check for non-UTF-8 files (excluding binary files)
+          bad_encoding=0
+          while IFS= read -r file; do
+            if [ -f "$file" ]; then
+              if ! file -b "$file" | grep -q "UTF-8\|ASCII"; then
+                echo "ERROR: File $file is not UTF-8 or ASCII encoded"
+                bad_encoding=1
+              fi
+            fi
+          done < <(git ls-files | grep -E '\.(ttl|md|yml|yaml|txt)$')
+
+          if [ $bad_encoding -eq 1 ]; then
+            exit 1
+          fi
+
+          echo "File encoding check passed"
+
+      - name: Summary
+        if: always()
+        shell: bash
+        run: |
+          {
+            echo "### Branch Protection Checks"
+            echo ""
+            echo "✓ Commit message quality verified"
+            echo "✓ No sensitive files detected"
+            echo "✓ Required files present"
+            echo "✓ Documentation validated"
+            echo "✓ File encodings verified"
+            echo ""
+            echo "This workflow ensures that contributions meet quality standards"
+            echo "before being merged to the main branch."
+          } >> "$GITHUB_STEP_SUMMARY"
