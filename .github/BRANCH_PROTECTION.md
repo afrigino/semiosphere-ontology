@@ -39,9 +39,10 @@ main
 **Require status checks to pass before merging**
 - ✅ Enable this option
 - ✅ Require branches to be up to date before merging
-- Required status checks to select:
+- Required status checks to select (search for these exact names after creating a PR):
   - `shacl` (from SHACL Validation workflow)
   - `render-mermaid` (from Render Mermaid Diagrams workflow)
+  - `Branch Protection Compliance` (from Branch Protection Checks workflow)
 
 **Require conversation resolution before merging**
 - ✅ Enable this option (ensures all review comments are addressed)

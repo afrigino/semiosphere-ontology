@@ -28,10 +28,10 @@ GitHub → Repository → Settings → Branches → Add rule
 
 ✅ Require status checks to pass before merging
   - ✅ Require branches to be up to date before merging
-  - Add status checks:
+  - Add status checks (search for these exact names):
     - `shacl`
     - `render-mermaid`
-    - `branch-protection-compliance`
+    - `Branch Protection Compliance`
 
 ✅ Require conversation resolution before merging
 

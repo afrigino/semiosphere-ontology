@@ -78,23 +78,22 @@ jobs:
 
           # List of patterns that should not be committed
           sensitive_patterns=(
-            "*.env"
-            "*.key"
-            "*.pem"
-            "*.p12"
-            "*.pfx"
-            ".DS_Store"
-            "Thumbs.db"
-            "*.swp"
-            "*~"
+            ".env$"
+            ".key$"
+            ".pem$"
+            ".p12$"
+            ".pfx$"
+            "^.DS_Store$"
+            "^Thumbs.db$"
+            ".swp$"
+            "~$"
           )
 
           found_sensitive=0
 
           for pattern in "${sensitive_patterns[@]}"; do
-            if git ls-files | grep -q "$pattern"; then
+            if git ls-files | grep -E "$pattern"; then
               echo "ERROR: Found sensitive/unwanted file matching pattern: $pattern"
-              git ls-files | grep "$pattern"
               found_sensitive=1
             fi
           done
@@ -168,16 +167,17 @@ jobs:
           echo "Checking file encodings and line endings..."
 
           # Check for non-UTF-8 files (excluding binary files)
-          if git ls-files | grep -E '\.(ttl|md|yml|yaml|txt)$' | while read -r file; do
+          bad_encoding=0
+          while IFS= read -r file; do
             if [ -f "$file" ]; then
               if ! file -b "$file" | grep -q "UTF-8\|ASCII"; then
                 echo "ERROR: File $file is not UTF-8 or ASCII encoded"
-                exit 1
+                bad_encoding=1
               fi
             fi
-          done; then
-            :
-          else
+          done < <(git ls-files | grep -E '\.(ttl|md|yml|yaml|txt)$')
+
+          if [ $bad_encoding -eq 1 ]; then
             exit 1
           fi
 
