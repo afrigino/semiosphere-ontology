@@ -8,9 +8,9 @@ jobs:
   render-mermaid:
     runs-on: ubuntu-latest
 
-env:
-  PUPPETEER_ARGS: "--no-sandbox --disable-setuid-sandbox --disable-dev-shm-usage"
-  
+    env:
+      PUPPETEER_ARGS: "--no-sandbox --disable-setuid-sandbox --disable-dev-shm-usage"
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
