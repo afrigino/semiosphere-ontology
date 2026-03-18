@@ -41,7 +41,6 @@ main
 - ✅ Require branches to be up to date before merging
 - Required status checks to select (search for these exact names after creating a PR):
   - `shacl` (from SHACL Validation workflow)
-  - `render-mermaid` (from Render Mermaid Diagrams workflow)
   - `Branch Protection Compliance` (from Branch Protection Checks workflow)
 
 **Require conversation resolution before merging**
@@ -99,7 +98,6 @@ The existing GitHub Actions workflows will automatically run on:
 
 Required checks:
 - **SHACL Validation** (`.github/workflows/shacl.yml`) - Ensures ontology validity
-- **Render Mermaid Diagrams** (`.github/workflows/render-mermaid.yml`) - Ensures diagrams render correctly
 
 ## Emergency Override
 

@@ -26,7 +26,7 @@ Unlike descriptive or reductionist ontologies, this project embeds theoretical c
   - `invalid/*.ttl` must fail
 
 - **Conceptual documentation** (`docs/`)  
-  Overview, theory, modeling guidance, and diagrams.
+  Overview, theory, modeling guidance, and [diagrams](docs/diagrams.md).
 
 - **Manifesto** (`MANIFESTO.md`)  
   A statement of scope, intent, and refusal of reductionism.
@@ -76,7 +76,7 @@ Extensions and implementations should occur downstream, without altering the the
 To maintain the integrity of this canonical reference artifact, the `main` branch is protected. All changes must:
 
 - Be submitted via pull request
-- Pass all CI validation checks (SHACL validation, diagram rendering, and branch protection checks)
+- Pass all CI validation checks (SHACL validation and branch protection checks)
 - Receive approval from code owners
 - Maintain theoretical alignment with Lotman's semiosphere framework
 

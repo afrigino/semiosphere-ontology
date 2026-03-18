@@ -30,7 +30,6 @@ GitHub → Repository → Settings → Branches → Add rule
   - ✅ Require branches to be up to date before merging
   - Add status checks (search for these exact names):
     - `shacl`
-    - `render-mermaid`
     - `Branch Protection Compliance`
 
 ✅ Require conversation resolution before merging
@@ -58,7 +57,6 @@ After saving, try to:
 - ✅ Prevents direct pushes to main
 - ✅ Requires code review from @afrigino
 - ✅ Ensures SHACL validation passes
-- ✅ Ensures diagrams render correctly
 - ✅ Enforces commit message quality
 - ✅ Prevents sensitive file commits
 - ✅ Validates required files exist
@@ -74,6 +72,5 @@ The following files implement branch protection:
 - `.github/CODEOWNERS` - Defines code ownership (requires @afrigino approval)
 - `.github/workflows/branch-protection.yml` - Automated quality checks
 - `.github/workflows/shacl.yml` - Validates ontology integrity
-- `.github/workflows/render-mermaid.yml` - Validates diagram rendering
 
 All workflows run automatically on pull requests to `main`.
