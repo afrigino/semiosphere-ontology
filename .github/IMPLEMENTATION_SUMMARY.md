@@ -77,14 +77,13 @@ All changes have been validated:
 ### Immediate Effect
 - Pull requests will require CODEOWNERS approval
 - Automated quality checks will run on all PRs
-- SHACL and Mermaid workflows continue as before
+- SHACL and branch protection workflows continue as before
 
 ### After Manual Setup (5 minutes)
 - Direct pushes to main will be blocked
 - All changes must go through pull requests
 - Required status checks must pass:
   - `shacl` - Ontology validation
-  - `render-mermaid` - Diagram rendering
   - `Branch Protection Compliance` - Quality checks
 - At least 1 approval required from code owners
 - Conversations must be resolved before merging
@@ -121,6 +120,6 @@ This implementation aligns with the repository's stated purpose as a "canonical,
 
 - Preventing unauthorized changes to the theoretical core
 - Requiring expert review (code owner approval)
-- Enforcing automated validation (SHACL, diagrams, quality checks)
+- Enforcing automated validation (SHACL validation and quality checks)
 - Maintaining clean commit history (linear history option)
 - Protecting against accidental or malicious changes
