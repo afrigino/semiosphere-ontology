@@ -30,6 +30,8 @@ jobs:
         run: |
           pyshacl \
             -s shacl/semiosphere.shacl.ttl \
+            -e ont/semiosphere.owl.ttl \
+            --inference rdfs \
             -d tests/valid.ttl \
             --format turtle \
             --output reports/report_valid.ttl
@@ -53,6 +55,8 @@ jobs:
             # If pyshacl returns success here, that is a failure of the test suite.
             if pyshacl \
               -s shacl/semiosphere.shacl.ttl \
+              -e ont/semiosphere.owl.ttl \
+              --inference rdfs \
               -d "$f" \
               --format turtle \
               --output "$out"

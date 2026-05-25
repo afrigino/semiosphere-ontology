@@ -70,6 +70,7 @@
       }
     """
   ] ;
+  sh:not [ a sh:NodeShape ] ;
   sh:message "Guardrail C3 (strict): Do not create individuals of CoreRole; assign CoreRole via RoleAssignment (assignedRole=:CoreRole)." .
 
 :NoPeripheryRoleIndividualsShape
@@ -83,6 +84,7 @@
       }
     """
   ] ;
+  sh:not [ a sh:NodeShape ] ;
   sh:message "Guardrail C3 (strict): Do not create individuals of PeripheryRole; assign PeripheryRole via RoleAssignment (assignedRole=:PeripheryRole)." .
 
 #################################################################

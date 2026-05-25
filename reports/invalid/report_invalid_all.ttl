@@ -1,0 +1,279 @@
+@prefix : <https://semiohub.org/ont/semiosphere#> .
+@prefix sh: <http://www.w3.org/ns/shacl#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+[] a sh:ValidationReport ;
+    sh:conforms false ;
+    sh:result [ a sh:ValidationResult ;
+            sh:focusNode :exp_bad8 ;
+            sh:resultMessage "Guardrail C7: ExplosionEvent must declare predictable=false." ;
+            sh:resultPath :predictable ;
+            sh:resultSeverity sh:Violation ;
+            sh:sourceConstraintComponent sh:HasValueConstraintComponent ;
+            sh:sourceShape [ sh:datatype xsd:boolean ;
+                    sh:hasValue false ;
+                    sh:maxCount 1 ;
+                    sh:message "Guardrail C7: ExplosionEvent must declare predictable=false." ;
+                    sh:minCount 1 ;
+                    sh:path :predictable ] ],
+        [ a sh:ValidationResult ;
+            sh:focusNode :ctx_bad1 ;
+            sh:resultMessage "SemiosphereContext must have at least one boundedBy Boundary." ;
+            sh:resultPath :boundedBy ;
+            sh:resultSeverity sh:Violation ;
+            sh:sourceConstraintComponent sh:MinCountConstraintComponent ;
+            sh:sourceShape _:nc144c931f77b4f889a2d57e353abd93eb29 ],
+        [ a sh:ValidationResult ;
+            sh:focusNode :ra_bad14 ;
+            sh:resultMessage "RoleAssignment must have exactly one assignedEntity (a SemioticEntity)." ;
+            sh:resultPath :assignedEntity ;
+            sh:resultSeverity sh:Violation ;
+            sh:sourceConstraintComponent sh:ClassConstraintComponent ;
+            sh:sourceShape _:nc144c931f77b4f889a2d57e353abd93eb6 ;
+            sh:value :sys_bad14 ],
+        [ a sh:ValidationResult ;
+            sh:focusNode :outside_bad9 ;
+            sh:resultMessage "Guardrail C8: NonSemioticOutside must not be typed as SemioticEntity (treat as constructed outside / remainder)." ;
+            sh:resultSeverity sh:Violation ;
+            sh:sourceConstraintComponent sh:NotConstraintComponent ;
+            sh:sourceShape :NonSemioticOutsideNotEntityShape ;
+            sh:value :outside_bad9 ],
+        [ a sh:ValidationResult ;
+            sh:focusNode :tr_bad4 ;
+            sh:resultMessage "Guardrail C5: TranslationProcess must declare invertible=false." ;
+            sh:resultPath :invertible ;
+            sh:resultSeverity sh:Violation ;
+            sh:sourceConstraintComponent sh:HasValueConstraintComponent ;
+            sh:sourceShape [ sh:datatype xsd:boolean ;
+                    sh:hasValue false ;
+                    sh:maxCount 1 ;
+                    sh:message "Guardrail C5: TranslationProcess must declare invertible=false." ;
+                    sh:minCount 1 ;
+                    sh:path :invertible ] ],
+        [ a sh:ValidationResult ;
+            sh:focusNode :outside_bad9 ;
+            sh:resultMessage "Guardrail C2: Every SemioticEntity must have dependsOnContext pointing to at least one SemiosphereContext." ;
+            sh:resultPath :dependsOnContext ;
+            sh:resultSeverity sh:Violation ;
+            sh:sourceConstraintComponent sh:MinCountConstraintComponent ;
+            sh:sourceShape _:nc144c931f77b4f889a2d57e353abd93eb2 ],
+        [ a sh:ValidationResult ;
+            sh:focusNode :b_bad8 ;
+            sh:resultMessage "Guardrail C4: Each Boundary must mediate at least one Process (typically TranslationProcess)." ;
+            sh:resultPath :mediates ;
+            sh:resultSeverity sh:Violation ;
+            sh:sourceConstraintComponent sh:ClassConstraintComponent ;
+            sh:sourceShape _:nc144c931f77b4f889a2d57e353abd93eb13 ;
+            sh:value :tr_bad8 ],
+        [ a sh:ValidationResult ;
+            sh:focusNode :ctx_bad14_a ;
+            sh:resultMessage "SemiosphereContext must have at least one boundedBy Boundary." ;
+            sh:resultPath :boundedBy ;
+            sh:resultSeverity sh:Violation ;
+            sh:sourceConstraintComponent sh:MinCountConstraintComponent ;
+            sh:sourceShape _:nc144c931f77b4f889a2d57e353abd93eb29 ],
+        [ a sh:ValidationResult ;
+            sh:focusNode :ra_bad13 ;
+            sh:resultMessage "RoleAssignment must have exactly one assignedEntity (a SemioticEntity)." ;
+            sh:resultPath :assignedEntity ;
+            sh:resultSeverity sh:Violation ;
+            sh:sourceConstraintComponent sh:ClassConstraintComponent ;
+            sh:sourceShape _:nc144c931f77b4f889a2d57e353abd93eb6 ;
+            sh:value :sys_bad13a ],
+        [ a sh:ValidationResult ;
+            sh:focusNode :b_bad3 ;
+            sh:resultMessage "Guardrail C4: Each Boundary must mediate at least one Process (typically TranslationProcess)." ;
+            sh:resultPath :mediates ;
+            sh:resultSeverity sh:Violation ;
+            sh:sourceConstraintComponent sh:MinCountConstraintComponent ;
+            sh:sourceShape _:nc144c931f77b4f889a2d57e353abd93eb13 ],
+        [ a sh:ValidationResult ;
+            sh:focusNode :ctx_bad12 ;
+            sh:resultMessage "SemiosphereContext must have at least one boundedBy Boundary." ;
+            sh:resultPath :boundedBy ;
+            sh:resultSeverity sh:Violation ;
+            sh:sourceConstraintComponent sh:MinCountConstraintComponent ;
+            sh:sourceShape _:nc144c931f77b4f889a2d57e353abd93eb29 ],
+        [ a sh:ValidationResult ;
+            sh:focusNode :b_bad5 ;
+            sh:resultMessage "Guardrail C4: Each Boundary must mediate at least one Process (typically TranslationProcess)." ;
+            sh:resultPath :mediates ;
+            sh:resultSeverity sh:Violation ;
+            sh:sourceConstraintComponent sh:ClassConstraintComponent ;
+            sh:sourceShape _:nc144c931f77b4f889a2d57e353abd93eb13 ;
+            sh:value :tr_bad5 ],
+        [ a sh:ValidationResult ;
+            sh:focusNode :ctx_bad13 ;
+            sh:resultMessage "SemiosphereContext must have at least one boundedBy Boundary." ;
+            sh:resultPath :boundedBy ;
+            sh:resultSeverity sh:Violation ;
+            sh:sourceConstraintComponent sh:MinCountConstraintComponent ;
+            sh:sourceShape _:nc144c931f77b4f889a2d57e353abd93eb29 ],
+        [ a sh:ValidationResult ;
+            sh:focusNode :ctx_bad10 ;
+            sh:resultMessage "SemiosphereContext must have at least one boundedBy Boundary." ;
+            sh:resultPath :boundedBy ;
+            sh:resultSeverity sh:Violation ;
+            sh:sourceConstraintComponent sh:MinCountConstraintComponent ;
+            sh:sourceShape _:nc144c931f77b4f889a2d57e353abd93eb29 ],
+        [ a sh:ValidationResult ;
+            sh:focusNode :ra_bad13 ;
+            sh:resultMessage "RoleAssignment must have exactly one assignedRole (a Role)." ;
+            sh:resultPath :assignedRole ;
+            sh:resultSeverity sh:Violation ;
+            sh:sourceConstraintComponent sh:ClassConstraintComponent ;
+            sh:sourceShape _:nc144c931f77b4f889a2d57e353abd93eb7 ;
+            sh:value :CoreRole ],
+        [ a sh:ValidationResult ;
+            sh:focusNode :b_bad3 ;
+            sh:resultMessage "Guardrail C4: Each Boundary must have at least one enablesTranslation to a TranslationProcess." ;
+            sh:resultPath :enablesTranslation ;
+            sh:resultSeverity sh:Violation ;
+            sh:sourceConstraintComponent sh:MinCountConstraintComponent ;
+            sh:sourceShape [ sh:class :TranslationProcess ;
+                    sh:message "Guardrail C4: Each Boundary must have at least one enablesTranslation to a TranslationProcess." ;
+                    sh:minCount 1 ;
+                    sh:path :enablesTranslation ] ],
+        [ a sh:ValidationResult ;
+            sh:focusNode :dlg_bad7 ;
+            sh:resultMessage "Guardrail C6: DialogueProcess must declare hasMemory=true." ;
+            sh:resultPath :hasMemory ;
+            sh:resultSeverity sh:Violation ;
+            sh:sourceConstraintComponent sh:HasValueConstraintComponent ;
+            sh:sourceShape [ sh:datatype xsd:boolean ;
+                    sh:hasValue true ;
+                    sh:maxCount 1 ;
+                    sh:message "Guardrail C6: DialogueProcess must declare hasMemory=true." ;
+                    sh:minCount 1 ;
+                    sh:path :hasMemory ] ],
+        [ a sh:ValidationResult ;
+            sh:focusNode :b_bad4 ;
+            sh:resultMessage "Guardrail C4: Each Boundary must mediate at least one Process (typically TranslationProcess)." ;
+            sh:resultPath :mediates ;
+            sh:resultSeverity sh:Violation ;
+            sh:sourceConstraintComponent sh:ClassConstraintComponent ;
+            sh:sourceShape _:nc144c931f77b4f889a2d57e353abd93eb13 ;
+            sh:value :tr_bad4 ],
+        [ a sh:ValidationResult ;
+            sh:focusNode :ctx_bad1 ;
+            sh:resultMessage "Guardrail C2: Every SemioticEntity must have dependsOnContext pointing to at least one SemiosphereContext." ;
+            sh:resultPath :dependsOnContext ;
+            sh:resultSeverity sh:Violation ;
+            sh:sourceConstraintComponent sh:MinCountConstraintComponent ;
+            sh:sourceShape _:nc144c931f77b4f889a2d57e353abd93eb2 ],
+        [ a sh:ValidationResult ;
+            sh:focusNode :ctx_bad1 ;
+            sh:resultMessage "Guardrail C1: SemiosphereContext must not also be typed as SemioticEntity (model Semiosphere as Context, not Entity)." ;
+            sh:resultSeverity sh:Violation ;
+            sh:sourceConstraintComponent sh:NotConstraintComponent ;
+            sh:sourceShape :SemiosphereContextShape ;
+            sh:value :ctx_bad1 ],
+        [ a sh:ValidationResult ;
+            sh:focusNode :b_bad6 ;
+            sh:resultMessage "Guardrail C4: Each Boundary must mediate at least one Process (typically TranslationProcess)." ;
+            sh:resultPath :mediates ;
+            sh:resultSeverity sh:Violation ;
+            sh:sourceConstraintComponent sh:ClassConstraintComponent ;
+            sh:sourceShape _:nc144c931f77b4f889a2d57e353abd93eb13 ;
+            sh:value :tr_bad6 ],
+        [ a sh:ValidationResult ;
+            sh:focusNode :ctx_bad10 ;
+            sh:resultMessage "Guardrail C8: Each SemiosphereContext should have at most one adjacentOutside placeholder." ;
+            sh:resultPath :adjacentOutside ;
+            sh:resultSeverity sh:Violation ;
+            sh:sourceConstraintComponent sh:ClassConstraintComponent ;
+            sh:sourceShape _:nc144c931f77b4f889a2d57e353abd93eb26 ;
+            sh:value :outside_bad10a ],
+        [ a sh:ValidationResult ;
+            sh:focusNode :ctx_bad2 ;
+            sh:resultMessage "SemiosphereContext must have at least one boundedBy Boundary." ;
+            sh:resultPath :boundedBy ;
+            sh:resultSeverity sh:Violation ;
+            sh:sourceConstraintComponent sh:MinCountConstraintComponent ;
+            sh:sourceShape _:nc144c931f77b4f889a2d57e353abd93eb29 ],
+        [ a sh:ValidationResult ;
+            sh:focusNode :ra_bad14 ;
+            sh:resultMessage "RoleAssignment must have exactly one assignedRole (a Role)." ;
+            sh:resultPath :assignedRole ;
+            sh:resultSeverity sh:Violation ;
+            sh:sourceConstraintComponent sh:ClassConstraintComponent ;
+            sh:sourceShape _:nc144c931f77b4f889a2d57e353abd93eb7 ;
+            sh:value :PeripheryRole ],
+        [ a sh:ValidationResult ;
+            sh:focusNode :ctx_bad14_b ;
+            sh:resultMessage "SemiosphereContext must have at least one boundedBy Boundary." ;
+            sh:resultPath :boundedBy ;
+            sh:resultSeverity sh:Violation ;
+            sh:sourceConstraintComponent sh:MinCountConstraintComponent ;
+            sh:sourceShape _:nc144c931f77b4f889a2d57e353abd93eb29 ],
+        [ a sh:ValidationResult ;
+            sh:focusNode :ctx_bad11 ;
+            sh:resultMessage "SemiosphereContext must have at least one boundedBy Boundary." ;
+            sh:resultPath :boundedBy ;
+            sh:resultSeverity sh:Violation ;
+            sh:sourceConstraintComponent sh:MinCountConstraintComponent ;
+            sh:sourceShape _:nc144c931f77b4f889a2d57e353abd93eb29 ],
+        [ a sh:ValidationResult ;
+            sh:focusNode :ctx_bad10 ;
+            sh:resultMessage "Guardrail C8: Each SemiosphereContext should have at most one adjacentOutside placeholder." ;
+            sh:resultPath :adjacentOutside ;
+            sh:resultSeverity sh:Violation ;
+            sh:sourceConstraintComponent sh:MaxCountConstraintComponent ;
+            sh:sourceShape _:nc144c931f77b4f889a2d57e353abd93eb26 ],
+        [ a sh:ValidationResult ;
+            sh:focusNode :b_bad7 ;
+            sh:resultMessage "Guardrail C4: Each Boundary must mediate at least one Process (typically TranslationProcess)." ;
+            sh:resultPath :mediates ;
+            sh:resultSeverity sh:Violation ;
+            sh:sourceConstraintComponent sh:ClassConstraintComponent ;
+            sh:sourceShape _:nc144c931f77b4f889a2d57e353abd93eb13 ;
+            sh:value :tr_bad7 ],
+        [ a sh:ValidationResult ;
+            sh:focusNode :ctx_bad10 ;
+            sh:resultMessage "Guardrail C8: Each SemiosphereContext should have at most one adjacentOutside placeholder." ;
+            sh:resultPath :adjacentOutside ;
+            sh:resultSeverity sh:Violation ;
+            sh:sourceConstraintComponent sh:ClassConstraintComponent ;
+            sh:sourceShape _:nc144c931f77b4f889a2d57e353abd93eb26 ;
+            sh:value :outside_bad10b ],
+        [ a sh:ValidationResult ;
+            sh:focusNode :b_bad9 ;
+            sh:resultMessage "Guardrail C4: Each Boundary must mediate at least one Process (typically TranslationProcess)." ;
+            sh:resultPath :mediates ;
+            sh:resultSeverity sh:Violation ;
+            sh:sourceConstraintComponent sh:ClassConstraintComponent ;
+            sh:sourceShape _:nc144c931f77b4f889a2d57e353abd93eb13 ;
+            sh:value :tr_bad9 ] .
+
+_:nc144c931f77b4f889a2d57e353abd93eb2 sh:class :SemiosphereContext ;
+    sh:message "Guardrail C2: Every SemioticEntity must have dependsOnContext pointing to at least one SemiosphereContext." ;
+    sh:minCount 1 ;
+    sh:path :dependsOnContext .
+
+_:nc144c931f77b4f889a2d57e353abd93eb6 sh:class :SemioticEntity ;
+    sh:maxCount 1 ;
+    sh:message "RoleAssignment must have exactly one assignedEntity (a SemioticEntity)." ;
+    sh:minCount 1 ;
+    sh:path :assignedEntity .
+
+_:nc144c931f77b4f889a2d57e353abd93eb7 sh:class :Role ;
+    sh:maxCount 1 ;
+    sh:message "RoleAssignment must have exactly one assignedRole (a Role)." ;
+    sh:minCount 1 ;
+    sh:path :assignedRole .
+
+_:nc144c931f77b4f889a2d57e353abd93eb26 sh:class :NonSemioticOutside ;
+    sh:maxCount 1 ;
+    sh:message "Guardrail C8: Each SemiosphereContext should have at most one adjacentOutside placeholder." ;
+    sh:path :adjacentOutside .
+
+_:nc144c931f77b4f889a2d57e353abd93eb13 sh:class :Process ;
+    sh:message "Guardrail C4: Each Boundary must mediate at least one Process (typically TranslationProcess)." ;
+    sh:minCount 1 ;
+    sh:path :mediates .
+
+_:nc144c931f77b4f889a2d57e353abd93eb29 sh:class :Boundary ;
+    sh:message "SemiosphereContext must have at least one boundedBy Boundary." ;
+    sh:minCount 1 ;
+    sh:path :boundedBy .
+
