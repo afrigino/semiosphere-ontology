@@ -233,12 +233,11 @@ Guardrails (normative modeling constraints):
   rdfs:range :SemioticSystem .
 
 :dialoguesWith
-  a owl:ObjectProperty ;
+  a owl:ObjectProperty, owl:SymmetricProperty ;
   rdfs:label "dialogues with" ;
   rdfs:domain :SemioticSystem ;
   rdfs:range :SemioticSystem ;
-  rdfs:comment "Interaction relation (use DialogueProcess for time/memory-sensitive modeling)." ;
-  owl:SymmetricProperty true .
+  rdfs:comment "Interaction relation (use DialogueProcess for time/memory-sensitive modeling)." .
 
 :generatesText
   a owl:ObjectProperty ;
